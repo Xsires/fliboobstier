@@ -1,6 +1,6 @@
-bin
-bin*
-.test.*
+bin/
 .git
-
+.idea
+vendor
 .vscode/*
+fliboobstier.db

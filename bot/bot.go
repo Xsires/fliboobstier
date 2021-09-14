@@ -4,7 +4,7 @@ import (
 	"github.com/chesnovsky/fliboobstier/config"
 	"github.com/chesnovsky/fliboobstier/logger"
 	"github.com/chesnovsky/fliboobstier/storage"
-	tgbotapi "gopkg.in/telegram-bot-api.v5"
+	tgbotapi "github.com/mohammadkarimi23/telegram-bot-api/v5"
 )
 
 type Bot struct {
@@ -43,13 +43,16 @@ func InitBot(mainConfig *config.MainConfig, storage *storage.StorageInstance) (B
 func (BotInstance *Bot) RunBot() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
+	BotInstance.createBotCommands()
 	updates, _ := BotInstance.TgBot.GetUpdatesChan(u)
 	for update := range updates {
 		logger.Logger.Debugf("Got raw message: %+v\n", update.Message)
 		if update.Message != nil {
 			if !BotInstance.processTransitions(update.Message) {
 				if update.Message.IsCommand() {
-					BotInstance.processAdminCommands(update.Message)
+					if botCommands.isAdminCommand(update.Message.Command()) {
+						BotInstance.processAdminCommands(update.Message)
+					}
 				} else {
 					BotInstance.processRegexActions(update.Message)
 				}
@@ -63,4 +66,14 @@ func (BotInstance *Bot) CritError(chatId int64, err error) {
 	msg := tgbotapi.NewMessage(chatId, "Я обосрался")
 	logger.Logger.Debugf("Sending message: %+v\n", msg)
 	BotInstance.TgBot.Send(msg)
+}
+
+func (BotInstance *Bot) createBotCommands() {
+	var commands []tgbotapi.BotCommand
+	for _, command := range botCommands.getAllCommands() {
+		commands = append(commands, tgbotapi.BotCommand{Command: command.Name, Description: command.Description})
+	}
+	if err := BotInstance.TgBot.SetMyCommands(commands); err != nil {
+		logger.Logger.Warnf("Cannot set command:\n%v", err)
+	}
 }

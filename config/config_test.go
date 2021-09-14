@@ -3,12 +3,13 @@ package config
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func createTestConfig(configPath string) error {
+func createTestConfig() (err error, configFile *os.File) {
 	testFileString := `
 ---
 
@@ -19,26 +20,33 @@ regex_actions:
     regex: ".*(gop|гоп).*"
 
     `
-	fileBytes := []byte(testFileString)
-	err := ioutil.WriteFile(configPath, fileBytes, 0644)
-	if err != nil {
-		err = fmt.Errorf("Cannot create config <%s>:\t%v", configPath, err)
+	file, createFileError := ioutil.TempFile("", "config")
+	if createFileError != nil {
+		return fmt.Errorf("Cannot create temp file: \t%v", createFileError), nil
 	}
-	return err
+	if chmodErr := file.Chmod(0644); chmodErr != nil {
+		return fmt.Errorf("Cannot chmod temp file: \t%v", chmodErr), nil
+	}
+	if _, writeStringErr := file.WriteString(testFileString); writeStringErr != nil {
+		return fmt.Errorf("Cannot write text to temp file: \t%v", writeStringErr), nil
+	}
+	return nil, file
 }
 
 // TestGetConfig tests config loading
 func TestGetConfig(t *testing.T) {
 	// Create and load config
-	testConfigPath := "../.test.yml"
-	err := createTestConfig(testConfigPath)
+	err, configFile := createTestConfig()
+	defer os.Remove(configFile.Name())
+
 	assert.Nil(t, err)
 
-	config, err := GetConfig(testConfigPath)
-	assert.Nil(t, err)
-
-	// Test token from makefile
 	myToken := "myLittleTestToken"
+	assert.Nil(t, os.Setenv("FLIBOOBSTIER_TG_TOKEN", myToken))
+
+	config, err := GetConfig(configFile.Name())
+	assert.Nil(t, err)
+
 	assert.Equal(t, myToken, config.TgToken)
 
 	// Test words count

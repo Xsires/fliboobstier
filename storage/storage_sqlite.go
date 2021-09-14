@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/chesnovsky/fliboobstier/bot_helpers"
+	"github.com/chesnovsky/fliboobstier/utils"
 	"github.com/chesnovsky/fliboobstier/logger"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -29,7 +29,7 @@ func (storage StorageInstance) GetRegexActionElementsSqLite(action_id string, el
 		err_msg := fmt.Sprintf("Cannot select content <%s> for action <%s> from database, query <%s>: %+v", element_type, action_id, query_str, err)
 		logger.Logger.Error(err_msg)
 		err_list = append(err_list, err_msg)
-		return Elements, bot_helpers.ErrListToError(err_list)
+		return Elements, utils.ErrListToError(err_list)
 	}
 	defer rows.Close()
 	for rows.Next() {
@@ -48,7 +48,7 @@ func (storage StorageInstance) GetRegexActionElementsSqLite(action_id string, el
 		logger.Logger.Error(err_msg)
 		err_list = append(err_list, err_msg)
 	}
-	return Elements, bot_helpers.ErrListToError(err_list)
+	return Elements, utils.ErrListToError(err_list)
 }
 
 // Database-dependent function
@@ -98,7 +98,7 @@ func (storage StorageInstance) GetAdminListSqlite() ([]string, error) {
 		err_msg := fmt.Sprintf("Cannot select admin list from database, query <%s>: %+v", query_str, err)
 		logger.Logger.Error(err_msg)
 		err_list = append(err_list, err_msg)
-		return AdminList, bot_helpers.ErrListToError(err_list)
+		return AdminList, utils.ErrListToError(err_list)
 	}
 	defer rows.Close()
 	for rows.Next() {
@@ -117,5 +117,5 @@ func (storage StorageInstance) GetAdminListSqlite() ([]string, error) {
 		logger.Logger.Error(err_msg)
 		err_list = append(err_list, err_msg)
 	}
-	return AdminList, bot_helpers.ErrListToError(err_list)
+	return AdminList, utils.ErrListToError(err_list)
 }

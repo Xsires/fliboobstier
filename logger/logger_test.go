@@ -1,14 +1,20 @@
 package logger
 
 import (
-	"testing"
 	"io/ioutil"
+	"os"
 	"strings"
+	"testing"
 )
 
 // TestInit tests logger init
 func TestInit(t *testing.T) {
-	logPath := "../.test.log"
+	file, createFileError := ioutil.TempFile("", "config")
+	if createFileError != nil {
+		t.Fatalf("Cannot create temp file: \t%v", createFileError)
+	}
+	logPath := file.Name()
+	defer os.Remove(file.Name())
 	Init(logPath)
 
 	logText := "This_is_my_error"

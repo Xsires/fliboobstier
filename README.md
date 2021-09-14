@@ -9,11 +9,11 @@
 `export HTTP_PROXY="socks5://login:passwd@example.com:1080"`
 
 ### Prepare database
-
+install sqlite3
 ```bash
-rm test.db
-sqlite3 fliboobstier.db < storage/sqlite_schema.sql
+make db
 ```
+look in ./bin folder 
 
 ### Manual build and run
 
@@ -23,9 +23,20 @@ $GOPATH/bin/fliboobstier
 ```
 
 ### Docker build and run
+
 ```
 docker build -t fliboobstier .
+```
 
+minimal configuration: 
+```
+docker run --it -rm  \
+-e FLIBOOBSTIER_TG_TOKEN=$FLIBOOBSTIER_TG_TOKEN \
+fliboobstier
+```
+
+full configuration:
+```
 docker run -d \
 -e HTTP_PROXY=$HTTP_PROXY \
 -e FLIBOOBSTIER_TG_TOKEN=$FLIBOOBSTIER_TG_TOKEN \
@@ -33,6 +44,8 @@ docker run -d \
 fliboobstier
 ```
 
-License
+### License
 ----
 Beer and pizza license
+
+

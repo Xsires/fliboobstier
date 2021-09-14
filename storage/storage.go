@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/chesnovsky/fliboobstier/bot_helpers"
+	"github.com/chesnovsky/fliboobstier/utils"
 	"github.com/chesnovsky/fliboobstier/logger"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -66,5 +66,5 @@ func (storage StorageInstance) GetRegexActionElements(action_id string) (RegexAc
 
 	action_elements := RegexActionElements{Images, Stickers, Gifs, Documents}
 
-	return action_elements, bot_helpers.ErrListToError(err_list)
+	return action_elements, utils.ErrListToError(err_list)
 }

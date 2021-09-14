@@ -1,4 +1,4 @@
-package bot_helpers
+package utils
 
 import (
 	"errors"

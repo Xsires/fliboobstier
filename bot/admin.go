@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/chesnovsky/fliboobstier/logger"
-	tgbotapi "gopkg.in/telegram-bot-api.v5"
+	tgbotapi "github.com/mohammadkarimi23/telegram-bot-api/v5"
 )
 
 func contains(arr []string, str string) bool {
@@ -17,12 +17,7 @@ func contains(arr []string, str string) bool {
 	return false
 }
 
-var AdminCommands = []string{"list_admins", "list_regex_actions", "show_regex_action", "add_regex_action_element", "remove_regex_action_element"}
-
 func (BotInstance *Bot) processAdminCommands(message *tgbotapi.Message) {
-	if !(contains(AdminCommands, message.Command())) {
-		return
-	}
 	if !BotInstance.isUserAdmin(message.From.UserName) {
 		logger.Logger.Infof("User @<%s> doesn't have admin privileges for command <%s>", message.From.UserName, message.Command())
 		msg_text := fmt.Sprintf("Звуки высокомерного игнорирования @%s", message.From.UserName)

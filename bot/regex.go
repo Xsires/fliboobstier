@@ -7,7 +7,7 @@ import (
 	"github.com/chesnovsky/fliboobstier/config"
 	"github.com/chesnovsky/fliboobstier/logger"
 	"github.com/chesnovsky/fliboobstier/storage"
-	tgbotapi "gopkg.in/telegram-bot-api.v5"
+	tgbotapi "github.com/mohammadkarimi23/telegram-bot-api/v5"
 )
 
 type MediaTypesType struct {

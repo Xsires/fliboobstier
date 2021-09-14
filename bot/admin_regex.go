@@ -5,18 +5,19 @@ import (
 	"strings"
 
 	"github.com/chesnovsky/fliboobstier/logger"
-	tgbotapi "gopkg.in/telegram-bot-api.v5"
+	tgbotapi "github.com/mohammadkarimi23/telegram-bot-api/v5"
 )
 
 func getElementTypeAndId(message *tgbotapi.Message) (string, string) {
 	if message.Animation != nil {
 		return "gif", message.Animation.FileID
 	}
+
 	if message.Photo != nil && len(*message.Photo) != 0 {
 		return "image", (*message.Photo)[len(*message.Photo)-1].FileID
 	}
 	if message.Sticker != nil {
-		return "sticker", message.Sticker.FileUniqueID
+		return "sticker", message.Sticker.FileID
 	}
 	return "", ""
 }
